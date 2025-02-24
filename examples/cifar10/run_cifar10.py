@@ -1,3 +1,5 @@
+import sys
+import os
 import logging
 import argparse
 import torch.nn as nn
@@ -7,11 +9,13 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 from logging import basicConfig, getLogger
 from multiprocessing import Process, set_start_method, get_start_method
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from feroseai import FroseAiServer, FroseAiOptimizer, FedDatasetsClassification
 
 formatter = '%(asctime)s [%(name)s] %(levelname)s :  %(message)s'
 basicConfig(level=logging.INFO, format=formatter)
-logger = getLogger("Frose-Runner")
+logger = getLogger("FeRoseAi-Runner")
 
 
 def _proc_run(config_path: str, client_id: int, model, dataset, device="cpu"):
@@ -48,7 +52,7 @@ def _proc_run(config_path: str, client_id: int, model, dataset, device="cpu"):
     logger.info("[Client:%4d]  Training Finished!!" % (client_id,))
 
 
-def run():
+def main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("config_path", type=str, help="path of config file")
     args = arg_parser.parse_args()
@@ -91,3 +95,6 @@ def run():
 
     server.stop()
 
+
+if __name__ == "__main__":
+    main()

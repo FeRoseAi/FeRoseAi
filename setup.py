@@ -7,19 +7,14 @@ def _requires_from_file():
 
 setup(
     name='feroseai',
-    version='0.0.2',
+    version='0.0.1',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     install_requires=_requires_from_file(),
-    url='https://github.com/rosso-ai-dataanalytics/FroseAi/',
+    url='https://github.com/FeRoseAi/FeRoseAi/',
     license='Apache License',
-    author='Masahiko Hashimoto',
-    entry_points={
-        "console_scripts": [
-            "froserun = feroseai.demo.runner:run",
-        ]
-    },
+    author='FeRose-Ai project',
     author_email='',
     description=''
 )
