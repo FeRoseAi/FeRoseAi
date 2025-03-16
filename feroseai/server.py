@@ -11,7 +11,7 @@ formatter = '%(asctime)s [%(name)s] %(levelname)s :  %(message)s'
 basicConfig(level=INFO, format=formatter)
 
 
-class FroseAiGrpcGateway(FroseAiServicer):
+class FeRoseAiGrpcGateway(FroseAiServicer):
     def __init__(self, config_pass: str, model, test_data=None, device="cpu"):
         self._agg = AggAverage(config_pass, model, test_data=test_data, device=device)
         self._logger = getLogger("FroseAi-Gateway")
@@ -52,7 +52,7 @@ class FroseAiGrpcGateway(FroseAiServicer):
         return FroseAiStatus(src=request.src, status=200, metrics=self.metrics)
 
 
-class FroseAiServer:
+class FeRoseAiServer:
     def __init__(self, config_pass: str, model, test_data=None, device="cpu", max_workers=4):
         self._conf = OmegaConf.load(config_pass)
         self._logger = getLogger("FroseAi-Srv")
@@ -62,7 +62,7 @@ class FroseAiServer:
             ("grpc.max_receive_message_length", 1000 * 1024 * 1024),
         ]
         self._server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers), options=grpc_opts, )
-        self._servicer = FroseAiGrpcGateway(config_pass, model, test_data=test_data, device=device)
+        self._servicer = FeRoseAiGrpcGateway(config_pass, model, test_data=test_data, device=device)
 
     def start(self):
         add_FroseAiServicer_to_server(self._servicer, self._server)

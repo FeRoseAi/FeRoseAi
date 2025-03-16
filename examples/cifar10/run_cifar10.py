@@ -11,7 +11,7 @@ from logging import basicConfig, getLogger
 from multiprocessing import Process, set_start_method, get_start_method
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from feroseai import FroseAiServer, FedDatasetsClassification
+from feroseai import FeRoseAiServer, FedDatasetsClassification
 from feroseai.optimizer import OptFedAvg
 
 formatter = '%(asctime)s [%(name)s] %(levelname)s :  %(message)s'
@@ -63,7 +63,7 @@ def main():
         train_data = datasets.CIFAR10(root=conf.data.data_cache_dir, train=True, download=True, transform=ToTensor())
         valid_data = datasets.CIFAR10(root=conf.data.data_cache_dir, train=False, download=True, transform=ToTensor())
     else:
-        raise Exception("Frose-Runner does not currently support such dataset")
+        raise Exception("FeRose-Runner does not currently support such dataset")
 
     fed_datasets = FedDatasetsClassification(conf.common.client_num, conf.train.batch_size, conf.train.inner_loop,
                                              conf.data.partition_method, conf.data.partition_alpha,
@@ -72,10 +72,10 @@ def main():
     if conf.model.model == "resnet18":
         model = models.resnet18()
     else:
-        raise Exception("Frose-Runner does not currently support such model")
+        raise Exception("FeRose-Runner does not currently support such model")
 
     # Server Start
-    server = FroseAiServer(args.config_path, model, test_data=fed_datasets.valid_data_loader, device=conf.common.device)
+    server = FeRoseAiServer(args.config_path, model, test_data=fed_datasets.valid_data_loader, device=conf.common.device)
     server.start()
 
     if get_start_method() == 'fork':
