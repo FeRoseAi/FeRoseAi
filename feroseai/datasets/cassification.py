@@ -1,10 +1,10 @@
 import numpy as np
 from typing import Dict
 from torch.utils.data import Dataset, DataLoader
-from ._datasets import FedDatasetsBase, FedInnerLoopSampler
+from .datasets_mixin import FedDatasetsMixin, FedInnerLoopSampler
 
 
-class FedDatasetsClassification(FedDatasetsBase):
+class FedDatasetsClassification(FedDatasetsMixin):
     def __init__(self, clients_num: int, batch_size: int, inner_loop: int, partition_method: str, partition_alpha: float,
                  train_data: Dataset, valid_data: Dataset, class_num: int, min_len=10):
         super().__init__(batch_size, clients_num, train_data, valid_data, class_num)
