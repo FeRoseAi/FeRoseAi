@@ -1,3 +1,7 @@
-from .server import FroseAiServer
-from .flow import FroseAiAggregator, FroseAiOptimizer
+from .server import FeRoseAiServer
 from .datasets import FedDatasetsClassification
+
+__all__ = [
+    "FeRoseAiServer",
+    "FedDatasetsClassification",
+]

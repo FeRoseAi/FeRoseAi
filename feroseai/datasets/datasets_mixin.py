@@ -4,7 +4,7 @@ from abc import ABCMeta
 from torch.utils.data import Dataset, DataLoader, sampler
 
 
-class FedDatasetsBase(metaclass=ABCMeta):
+class FedDatasetsMixin(metaclass=ABCMeta):
     def __init__(self, batch_size, clients_num, train_data: Dataset, valid_data: Dataset, class_num=0, random_seed=0):
         self._train_data = train_data
         self._valid_data = valid_data

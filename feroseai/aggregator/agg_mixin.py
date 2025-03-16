@@ -5,13 +5,13 @@ import csv
 from queue import Queue
 from omegaconf import OmegaConf
 from logging import getLogger
-from typing import Dict, Optional
+from typing import Dict
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
 from threading import Thread
 
 
-class FroseAiAggFrame(metaclass=ABCMeta):
+class AggMixin(metaclass=ABCMeta):
     def __init__(self, config_pass: str, model, test_data=None, device="cpu"):
         self._conf = OmegaConf.load(config_pass)
         self._device = device
