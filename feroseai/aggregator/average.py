@@ -1,11 +1,10 @@
 import torch
 import copy
-from typing import Dict
 from torch import nn
-from ..agg_frame import FroseAiAggFrame
+from .agg_mixin import AggMixin
 
 
-class FedAvgAggregator(FroseAiAggFrame):
+class AggAverage(AggMixin):
     def aggregate(self):
         sample_num = 0
         for i in range(self.client_num):
