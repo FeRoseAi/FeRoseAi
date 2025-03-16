@@ -1,19 +1,19 @@
 import torch
 from torch.optim.optimizer import required
-from ..opt_frame import FroseAiOptFrame
+from .opt_mixin import OptMixin
 
 
-class FedAvg(FroseAiOptFrame):
+class OptFedAvg(OptMixin):
     def __init__(self, parameters, client_id: int, config_path: str,
                  lr=required, momentum=0, dampening=0, weight_decay=0, nesterov=False, train_data_num=0):
         defaults = dict(lr=lr, momentum=momentum, dampening=dampening, weight_decay=weight_decay,
                         nesterov=nesterov, initial_lr=lr)
-        super(FedAvg, self).__init__(parameters, defaults, client_id, config_path)
+        super(OptFedAvg, self).__init__(parameters, defaults, client_id, config_path)
 
         self._train_data_num = train_data_num
 
     def __setstate__(self, state):
-        super(FedAvg, self).__setstate__(state)
+        super(OptFedAvg, self).__setstate__(state)
         for group in self.param_groups:
             group.setdefault('nesterov', False)
 

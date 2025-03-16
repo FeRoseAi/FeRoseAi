@@ -8,11 +8,11 @@ from torch.optim.optimizer import Optimizer
 from omegaconf import OmegaConf
 from logging import getLogger
 from abc import ABCMeta, abstractmethod
-from .pb.froseai_pb2 import FroseAiPiece, FroseAiParams, FroseAiStatus
-from .pb.froseai_pb2_grpc import FroseAiStub
+from ..pb.froseai_pb2 import FroseAiPiece, FroseAiParams, FroseAiStatus
+from ..pb.froseai_pb2_grpc import FroseAiStub
 
 
-class FroseAiOptFrame(Optimizer, metaclass=ABCMeta):
+class OptMixin(Optimizer, metaclass=ABCMeta):
     def __init__(self, params, defaults, client_id: int, config_pass: str):
         super().__init__(params, defaults)
         self._client_id = client_id

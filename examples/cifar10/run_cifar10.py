@@ -11,7 +11,8 @@ from logging import basicConfig, getLogger
 from multiprocessing import Process, set_start_method, get_start_method
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from feroseai import FroseAiServer, FroseAiOptimizer, FedDatasetsClassification
+from feroseai import FroseAiServer, FedDatasetsClassification
+from feroseai.optimizer import OptFedAvg
 
 formatter = '%(asctime)s [%(name)s] %(levelname)s :  %(message)s'
 basicConfig(level=logging.INFO, format=formatter)
@@ -20,9 +21,9 @@ logger = getLogger("FeRoseAi-Runner")
 
 def _proc_run(config_path: str, client_id: int, model, dataset, device="cpu"):
     conf = OmegaConf.load(config_path)
-    optimizer = FroseAiOptimizer(model.parameters(), client_id, config_path,
-                                 lr=conf.train.learning_rate, weight_decay=conf.train.weight_decay,
-                                 train_data_num=dataset["num"])
+    optimizer = OptFedAvg(model.parameters(), client_id, config_path,
+                          lr=conf.train.learning_rate, weight_decay=conf.train.weight_decay,
+                          train_data_num=dataset["num"])
     optimizer.hello(model)
 
     criterion = nn.CrossEntropyLoss()
@@ -85,7 +86,7 @@ def main():
         client = Process(target=_proc_run,
                          args=(args.config_path, client_id, model, fed_datasets.fed_dataset(client_id), conf.common.device,))
 
-        # client start
+        # optimizer start
         client.start()
         clients.append(client)
 
