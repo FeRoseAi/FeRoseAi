@@ -1,6 +1,7 @@
 import time
-import pickle
 import grpc
+import pickle
+import ormsgpack
 import torch
 from typing import Dict
 from torch import nn
@@ -8,8 +9,9 @@ from torch.optim.optimizer import Optimizer
 from omegaconf import OmegaConf
 from logging import getLogger
 from abc import ABCMeta, abstractmethod
-from ..pb.froseai_pb2 import FroseAiPiece, FroseAiParams, FroseAiStatus
-from ..pb.froseai_pb2_grpc import FroseAiStub
+from ..pb.froseai_pb2 import FeRoseAiMsg
+from ..pb.froseai_pb2_grpc import FeRoseAiStub
+from .. import FeRoseAiParamsMsg, FeRoseAiPieceMsg
 
 
 class OptMixin(Optimizer, metaclass=ABCMeta):
@@ -43,31 +45,35 @@ class OptMixin(Optimizer, metaclass=ABCMeta):
     @torch.no_grad()
     def hello(self, model: nn.modules):
         with grpc.insecure_channel(self.server_url, options=self._grpc_opts) as channel:
-            stub = FroseAiStub(channel)
-            messages = pickle.dumps({"model": model.cpu().state_dict()})
-            rsp = stub.Hello(FroseAiParams(src=self._client_id, messages=messages))
+            stub = FeRoseAiStub(channel)
+            msg = FeRoseAiParamsMsg(src=self._client_id, params=pickle.dumps({"model": model.cpu().state_dict()}))
+            rsp_b = stub.Hello(FeRoseAiMsg(messages=ormsgpack.packb(msg)))
 
-            messages = pickle.loads(rsp.messages)
-            model.load_state_dict(messages["model"])
-            self._round = rsp.round
+            rsp = ormsgpack.unpackb(rsp_b.messages)
+            params = pickle.loads(rsp["params"])
+            model.load_state_dict(params["model"])
+            self._round = rsp["round"]
 
     @torch.no_grad()
     def update(self, model: nn.modules):
         with grpc.insecure_channel(self.server_url, options=self._grpc_opts) as channel:
-            stub = FroseAiStub(channel)
+            stub = FeRoseAiStub(channel)
             messages = self.snd_params()
             messages["model"] = model.cpu().state_dict()
-            stub.Push(FroseAiParams(src=self.client_id, messages=pickle.dumps(messages), round=self._round))
+            msg = FeRoseAiParamsMsg(src=self._client_id, params=pickle.dumps(messages), round=self._round)
+            stub.Push(FeRoseAiMsg(messages=ormsgpack.packb(msg)))
 
             ret_code = 204
             while ret_code != 200:
-                rsp = stub.Pull(FroseAiPiece(src=self.client_id))
-                ret_code = rsp.status
-                self._round = rsp.round
+                msg = FeRoseAiPieceMsg(src=self._client_id)
+                rsp_b = stub.Pull(FeRoseAiMsg(messages=ormsgpack.packb(msg)))
+                rsp = ormsgpack.unpackb(rsp_b.messages)
+                ret_code = rsp["status"]
+                self._round = rsp["round"]
 
                 if ret_code == 200:
-                    messages = pickle.loads(rsp.messages)
-                    model.load_state_dict(messages["model"])
+                    params = pickle.loads(rsp["params"])
+                    model.load_state_dict(params["model"])
                     self.rcv_params(messages)
 
                 else:

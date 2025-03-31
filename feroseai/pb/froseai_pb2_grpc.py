@@ -5,7 +5,7 @@ import warnings
 
 import froseai_pb2 as froseai__pb2
 
-GRPC_GENERATED_VERSION = '1.70.0'
+GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class FroseAiStub(object):
+class FeRoseAiStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -35,28 +35,28 @@ class FroseAiStub(object):
             channel: A grpc.Channel.
         """
         self.Hello = channel.unary_unary(
-                '/FroseAi/Hello',
-                request_serializer=froseai__pb2.FroseAiParams.SerializeToString,
-                response_deserializer=froseai__pb2.FroseAiParams.FromString,
+                '/FeRoseAi/Hello',
+                request_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
+                response_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
                 _registered_method=True)
         self.Push = channel.unary_unary(
-                '/FroseAi/Push',
-                request_serializer=froseai__pb2.FroseAiParams.SerializeToString,
-                response_deserializer=froseai__pb2.FroseAiPiece.FromString,
+                '/FeRoseAi/Push',
+                request_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
+                response_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
                 _registered_method=True)
         self.Pull = channel.unary_unary(
-                '/FroseAi/Pull',
-                request_serializer=froseai__pb2.FroseAiPiece.SerializeToString,
-                response_deserializer=froseai__pb2.FroseAiParams.FromString,
+                '/FeRoseAi/Pull',
+                request_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
+                response_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
                 _registered_method=True)
         self.Status = channel.unary_unary(
-                '/FroseAi/Status',
-                request_serializer=froseai__pb2.FroseAiPiece.SerializeToString,
-                response_deserializer=froseai__pb2.FroseAiStatus.FromString,
+                '/FeRoseAi/Status',
+                request_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
+                response_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
                 _registered_method=True)
 
 
-class FroseAiServicer(object):
+class FeRoseAiServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Hello(self, request, context):
@@ -84,37 +84,37 @@ class FroseAiServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_FroseAiServicer_to_server(servicer, server):
+def add_FeRoseAiServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Hello': grpc.unary_unary_rpc_method_handler(
                     servicer.Hello,
-                    request_deserializer=froseai__pb2.FroseAiParams.FromString,
-                    response_serializer=froseai__pb2.FroseAiParams.SerializeToString,
+                    request_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
+                    response_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
             ),
             'Push': grpc.unary_unary_rpc_method_handler(
                     servicer.Push,
-                    request_deserializer=froseai__pb2.FroseAiParams.FromString,
-                    response_serializer=froseai__pb2.FroseAiPiece.SerializeToString,
+                    request_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
+                    response_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
             ),
             'Pull': grpc.unary_unary_rpc_method_handler(
                     servicer.Pull,
-                    request_deserializer=froseai__pb2.FroseAiPiece.FromString,
-                    response_serializer=froseai__pb2.FroseAiParams.SerializeToString,
+                    request_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
+                    response_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
             ),
             'Status': grpc.unary_unary_rpc_method_handler(
                     servicer.Status,
-                    request_deserializer=froseai__pb2.FroseAiPiece.FromString,
-                    response_serializer=froseai__pb2.FroseAiStatus.SerializeToString,
+                    request_deserializer=froseai__pb2.FeRoseAiMsg.FromString,
+                    response_serializer=froseai__pb2.FeRoseAiMsg.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'FroseAi', rpc_method_handlers)
+            'FeRoseAi', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('FroseAi', rpc_method_handlers)
+    server.add_registered_method_handlers('FeRoseAi', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class FroseAi(object):
+class FeRoseAi(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -131,9 +131,9 @@ class FroseAi(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/FroseAi/Hello',
-            froseai__pb2.FroseAiParams.SerializeToString,
-            froseai__pb2.FroseAiParams.FromString,
+            '/FeRoseAi/Hello',
+            froseai__pb2.FeRoseAiMsg.SerializeToString,
+            froseai__pb2.FeRoseAiMsg.FromString,
             options,
             channel_credentials,
             insecure,
@@ -158,9 +158,9 @@ class FroseAi(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/FroseAi/Push',
-            froseai__pb2.FroseAiParams.SerializeToString,
-            froseai__pb2.FroseAiPiece.FromString,
+            '/FeRoseAi/Push',
+            froseai__pb2.FeRoseAiMsg.SerializeToString,
+            froseai__pb2.FeRoseAiMsg.FromString,
             options,
             channel_credentials,
             insecure,
@@ -185,9 +185,9 @@ class FroseAi(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/FroseAi/Pull',
-            froseai__pb2.FroseAiPiece.SerializeToString,
-            froseai__pb2.FroseAiParams.FromString,
+            '/FeRoseAi/Pull',
+            froseai__pb2.FeRoseAiMsg.SerializeToString,
+            froseai__pb2.FeRoseAiMsg.FromString,
             options,
             channel_credentials,
             insecure,
@@ -212,9 +212,9 @@ class FroseAi(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/FroseAi/Status',
-            froseai__pb2.FroseAiPiece.SerializeToString,
-            froseai__pb2.FroseAiStatus.FromString,
+            '/FeRoseAi/Status',
+            froseai__pb2.FeRoseAiMsg.SerializeToString,
+            froseai__pb2.FeRoseAiMsg.FromString,
             options,
             channel_credentials,
             insecure,

@@ -1,17 +1,42 @@
 import grpc
 import pickle
+import ormsgpack
+from typing import Optional
 from logging import INFO, basicConfig, getLogger
 from concurrent import futures
 from omegaconf import OmegaConf
-from .pb.froseai_pb2 import FroseAiPiece, FroseAiParams, FroseAiStatus
-from .pb.froseai_pb2_grpc import FroseAiServicer, add_FroseAiServicer_to_server
+from dataclasses import dataclass
+from .pb.froseai_pb2 import FeRoseAiMsg
+from .pb.froseai_pb2_grpc import FeRoseAiServicer, add_FeRoseAiServicer_to_server
 from .aggregator import AggAverage
 
 formatter = '%(asctime)s [%(name)s] %(levelname)s :  %(message)s'
 basicConfig(level=INFO, format=formatter)
 
 
-class FeRoseAiGrpcGateway(FroseAiServicer):
+@dataclass
+class FeRoseAiParamsMsg:
+    src: int
+    params: bin
+    status: int = 200
+    round: int = 0
+    metrics: Optional[dict] = None
+
+@dataclass
+class FeRoseAiPieceMsg:
+    src: int
+    status: int = 200
+    round: int = 0
+
+@dataclass
+class FeRoseAiStsMsg:
+    src: int
+    status: int = 200
+    round: int = 0
+    metrics: Optional[dict] = None
+
+
+class FeRoseAiGrpcGateway(FeRoseAiServicer):
     def __init__(self, config_pass: str, model, test_data=None, device="cpu"):
         self._agg = AggAverage(config_pass, model, test_data=test_data, device=device)
         self._logger = getLogger("FroseAi-Gateway")
@@ -27,29 +52,37 @@ class FeRoseAiGrpcGateway(FroseAiServicer):
 
     def Hello(self, request, context):
         self._agg.round = 1
+        req = ormsgpack.unpackb(request.messages)
         ret_model_state = self.model.cpu().state_dict()
         if ret_model_state is None:
-            messages = request.messages
+            params = request.messages
         else:
-            messages = pickle.dumps({"model": ret_model_state})
-        return FroseAiParams(src=request.src, messages=messages, metrics=self.metrics, round=self._agg.round)
+            params = {"model": ret_model_state}
+        msg = FeRoseAiParamsMsg(src=req["src"], params=pickle.dumps(params), metrics=self.metrics, round=self._agg.round)
+        return FeRoseAiMsg(messages=ormsgpack.packb(msg))
 
     def Push(self, request, context):
-        self._agg.push(request.src, pickle.loads(request.messages), request.round)
-        return FroseAiPiece(src=request.src, status=202)
+        req = ormsgpack.unpackb(request.messages)
+        self._agg.push(req["src"], pickle.loads(req["params"]), req["round"])
+        msg = FeRoseAiPieceMsg(src=req["src"], status=202)
+        return FeRoseAiMsg(messages=ormsgpack.packb(msg))
 
     def Pull(self, request, context):
         status = 204
         messages = None
-        if not self._agg.snd_q[request.src].empty():
+        req = ormsgpack.unpackb(request.messages)
+        if not self._agg.snd_q[req["src"]].empty():
             status = 200
-            messages = self._agg.snd_q[request.src].get()
+            messages = self._agg.snd_q[req["src"]].get()
             self._agg.clear_aggregator()
 
-        return FroseAiParams(src=request.src, status=status, messages=messages, round=self._agg.round, metrics=self.metrics)
+        msg = FeRoseAiParamsMsg(src=req["src"], status=status, params=messages, round=self._agg.round, metrics=self.metrics)
+        return FeRoseAiMsg(messages=ormsgpack.packb(msg))
 
     def Status(self, request, context):
-        return FroseAiStatus(src=request.src, status=200, metrics=self.metrics)
+        req = ormsgpack.unpackb(request.messages)
+        msg = FeRoseAiStsMsg(src=req["src"], status=200, round=self._agg.round, metrics=self.metrics)
+        return FeRoseAiMsg(messages=ormsgpack.packb(msg))
 
 
 class FeRoseAiServer:
@@ -65,7 +98,7 @@ class FeRoseAiServer:
         self._servicer = FeRoseAiGrpcGateway(config_pass, model, test_data=test_data, device=device)
 
     def start(self):
-        add_FroseAiServicer_to_server(self._servicer, self._server)
+        add_FeRoseAiServicer_to_server(self._servicer, self._server)
         port_num = int(self._conf.common.server_url.split(":")[1])
         port_str = '[::]:' + str(port_num)
         self._server.add_insecure_port(port_str)
