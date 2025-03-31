@@ -24,19 +24,15 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rfroseai.proto\"^\n\rFroseAiParams\x12\x0b\n\x03src\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\x10\n\x08messages\x18\x03 \x01(\x0c\x12\r\n\x05round\x18\x04 \x01(\x05\x12\x0f\n\x07metrics\x18\x05 \x01(\t\":\n\x0c\x46roseAiPiece\x12\x0b\n\x03src\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\r\n\x05round\x18\x03 \x01(\x05\"L\n\rFroseAiStatus\x12\x0b\n\x03src\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\x05\x12\r\n\x05round\x18\x03 \x01(\x05\x12\x0f\n\x07metrics\x18\x04 \x01(\t2\xb1\x01\n\x07\x46roseAi\x12)\n\x05Hello\x12\x0e.FroseAiParams\x1a\x0e.FroseAiParams\"\x00\x12\'\n\x04Push\x12\x0e.FroseAiParams\x1a\r.FroseAiPiece\"\x00\x12\'\n\x04Pull\x12\r.FroseAiPiece\x1a\x0e.FroseAiParams\"\x00\x12)\n\x06Status\x12\r.FroseAiPiece\x1a\x0e.FroseAiStatus\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rfroseai.proto\"\x1f\n\x0b\x46\x65RoseAiMsg\x12\x10\n\x08messages\x18\x01 \x01(\x0c\x32\xa5\x01\n\x08\x46\x65RoseAi\x12%\n\x05Hello\x12\x0c.FeRoseAiMsg\x1a\x0c.FeRoseAiMsg\"\x00\x12$\n\x04Push\x12\x0c.FeRoseAiMsg\x1a\x0c.FeRoseAiMsg\"\x00\x12$\n\x04Pull\x12\x0c.FeRoseAiMsg\x1a\x0c.FeRoseAiMsg\"\x00\x12&\n\x06Status\x12\x0c.FeRoseAiMsg\x1a\x0c.FeRoseAiMsg\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'froseai_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_FROSEAIPARAMS']._serialized_start=17
-  _globals['_FROSEAIPARAMS']._serialized_end=111
-  _globals['_FROSEAIPIECE']._serialized_start=113
-  _globals['_FROSEAIPIECE']._serialized_end=171
-  _globals['_FROSEAISTATUS']._serialized_start=173
-  _globals['_FROSEAISTATUS']._serialized_end=249
-  _globals['_FROSEAI']._serialized_start=252
-  _globals['_FROSEAI']._serialized_end=429
+  _globals['_FEROSEAIMSG']._serialized_start=17
+  _globals['_FEROSEAIMSG']._serialized_end=48
+  _globals['_FEROSEAI']._serialized_start=51
+  _globals['_FEROSEAI']._serialized_end=216
 # @@protoc_insertion_point(module_scope)

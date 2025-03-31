@@ -6,5 +6,4 @@ grpcio
 grpcio-tools
 omegaconf
 fastapi
-#websocket-client
-#pymongo
+ormsgpack

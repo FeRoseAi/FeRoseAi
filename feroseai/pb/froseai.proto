@@ -1,29 +1,12 @@
 syntax = "proto3";
 
-service FroseAi {
-  rpc Hello(FroseAiParams) returns (FroseAiParams) {};
-  rpc Push(FroseAiParams) returns (FroseAiPiece) {};
-  rpc Pull(FroseAiPiece) returns (FroseAiParams) {};
-  rpc Status(FroseAiPiece) returns (FroseAiStatus) {};
+service FeRoseAi {
+  rpc Hello(FeRoseAiMsg) returns (FeRoseAiMsg) {};
+  rpc Push(FeRoseAiMsg) returns (FeRoseAiMsg) {};
+  rpc Pull(FeRoseAiMsg) returns (FeRoseAiMsg) {};
+  rpc Status(FeRoseAiMsg) returns (FeRoseAiMsg) {};
 }
 
-message FroseAiParams {
-  int32 src = 1;
-  int32 status = 2;
-  bytes messages = 3;
-  int32 round = 4;
-  string metrics = 5;
-}
-
-message FroseAiPiece {
-  int32 src = 1;
-  int32 status = 2;
-  int32 round = 3;
-}
-
-message FroseAiStatus {
-  int32 src = 1;
-  int32 status = 2;
-  int32 round = 3;
-  string metrics = 4;
+message FeRoseAiMsg {
+  bytes messages = 1;
 }
